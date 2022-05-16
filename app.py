@@ -33,7 +33,7 @@ def hello_world():
             send(id, "Подождите...")
             currency = Currency()
             json_cur = currency.check_currency()
-            reply = f"EUR: {json_cur['eur']}₽\nUSD: {json_cur['usd']}₽\nBGN: {json_cur['bgn']}₽\nпо ЦБ РФ"
+            reply = f"EUR: {json_cur['eur']}₽\nUSD: {json_cur['usd']}₽\nBGN: {json_cur['bgn']}₽\nTRY: {json_cur['try']}₽\nпо ЦБ РФ"
             send(id, reply)
         elif text == '/weather':
             reply = ''
