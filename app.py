@@ -67,14 +67,12 @@ def notification():
                 api_response = api_result.json()
                 reply += f"{city}: {api_response['current']['temperature']}°\n"
             message = f'''Доброе утро!
-        Сегодня такие курсы валют:
-        EUR: {json_cur['eur']}₽\nUSD: {json_cur['usd']}₽\nBGN: {json_cur['bgn']}₽\nTRY: {json_cur['try']}₽\nпо ЦБ РФ
-        Также сегодня вот такая погода:\n''' + reply
+Сегодня такие курсы валют:
+EUR: {json_cur['eur']}₽\nUSD: {json_cur['usd']}₽\nBGN: {json_cur['bgn']}₽\nTRY: {json_cur['try']}₽\nпо ЦБ РФ
+Также сегодня вот такая погода:\n''' + reply
             send(id, message)
 
 
 if __name__ == '__main__':
-    schedule.every().day.at("09:30").do(notification)
-    notification()
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
