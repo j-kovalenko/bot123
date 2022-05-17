@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 from os.path import join, dirname
 from currency import Currency
+import schedule
 
 app = Flask(__name__)
 
@@ -29,6 +30,9 @@ def hello_world():
         text = request.json['message']['text']
         if text == '/start':
             send(id, 'Привет!\nПришли мне /currency для получения курса валют или /weather для получения погоды!')
+            f = open("users.txt", 'a', encoding='utf-8')
+            f.write(str(id) + ', ')
+            f.close()
         elif text == '/currency':
             send(id, "Подождите...")
             currency = Currency()
@@ -50,6 +54,27 @@ def hello_world():
     return {"ok": True}
 
 
+def notification():
+    f = open('users.txt', 'r', encoding='utf-8')
+    for line in f.readlines():
+        for id in line.split(', '):
+            currency = Currency()
+            json_cur = currency.check_currency()
+            reply = ''
+            for city in ['Moscow', 'Sofia', 'Antalya']:
+                params = {"access_key": "4757691b2af74089ebb6d2b398420b9e", "query": city}
+                api_result = requests.get('http://api.weatherstack.com/current', params)
+                api_response = api_result.json()
+                reply += f"{city}: {api_response['current']['temperature']}°\n"
+            message = f'''Доброе утро!
+        Сегодня такие курсы валют:
+        EUR: {json_cur['eur']}₽\nUSD: {json_cur['usd']}₽\nBGN: {json_cur['bgn']}₽\nTRY: {json_cur['try']}₽\nпо ЦБ РФ
+        Также сегодня вот такая погода:\n''' + reply
+            send(id, message)
+
+
 if __name__ == '__main__':
+    schedule.every().day.at("09:30").do(notification)
+    notification()
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
