@@ -51,16 +51,21 @@ def bot():
             if len(text.split()) == 1:
                 num(id)
             else:
-                text.split()
+                args = text.split()[1:]
                 try:
-                    if len(text) > 3:
-                        send(id, 'too many args')
-                    elif len(text) == 2:
-                        num(id, r=[0, int(text[1]) + 1])
-                    elif len(text) == 3:
-                        num(id, r=[int(text[1]), int(text[2])])
+                    if len(args) > 2:
+                        send(id, 'error: too many args')
+                    elif len(args) == 2:
+                        num(id, r=[0, int(args[1]) + 1])
+                    elif len(args) == 3:
+                        n1 = int(args[1])
+                        n2 = int(args[2])
+                        if n2 > n1:
+                            num(id, r=[n1, n2])
+                        else:
+                            send(id, "error: number2 less that number1")
                 except ValueError:
-                    send(id, 'wrong literal')
+                    send(id, 'error: wrong literal')
         else:
             send(id, f"you wrote: {text}\nreversed: {text[::-1]}")
     else:
@@ -90,9 +95,10 @@ EUR: {json_cur['eur']}₽\nUSD: {json_cur['usd']}₽\nBGN: {json_cur['bgn']}₽\
 
 def num(id, r=[]):
     if len(r) == 2:
-        send(id, ch(range(r[0], r[1])))
+        n = ch(range(r[0], r[1]))
     else:
-        send(id, ch(range(0, 1000000)))
+        n = ch(range(0, 1000000))
+    send(id, f"random number: {n}")
 
 
 if __name__ == '__main__':
