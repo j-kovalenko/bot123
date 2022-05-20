@@ -66,6 +66,8 @@ def bot():
                             send(id, "error: number2 less that number1")
                 except ValueError:
                     send(id, 'error: wrong literal')
+        elif text == '/caesar':
+            pass
         else:
             send(id, f"you wrote: {text}\nreversed: {text[::-1]}")
     else:
@@ -99,6 +101,27 @@ def num(id, r=[]):
     else:
         n = ch(range(0, 1000000))
     send(id, f"random number: {n}")
+
+
+def caesar(id, y, x):
+    x = x.replace('ё', 'е').replace('Ё', 'Е')
+    res = ''
+    for i in range(0, len(x)):
+        if ord('А') <= ord(x[i]) <= ord('Я'):
+            b = ((ord(x[i]) + y - ord('А')) % 32) + ord('А')
+            res += chr(b)
+        elif ord('а') <= ord(x[i]) <= ord('я'):
+            a = ((ord(x[i]) + y - ord('а')) % 32) + ord('а')
+            res += chr(a)
+        elif ord('A') <= ord(x[i]) <= ord('Z'):
+            b = ((ord(x[i]) + y - ord('A')) % 26) + ord('A')
+            res += chr(b)
+        elif ord('a') <= ord(x[i]) <= ord('z'):
+            a = ((ord(x[i]) + y - ord('a')) % 26) + ord('a')
+            res += chr(a)
+        else:
+            res += x[i]
+    send(id, res)
 
 
 if __name__ == '__main__':
