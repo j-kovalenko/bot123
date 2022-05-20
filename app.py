@@ -1,22 +1,16 @@
 from flask import Flask, request
 import requests
-from dotenv import load_dotenv
 import os
-from os.path import join, dirname
 from currency import Currency
 from random import choice as ch
+from secret_files import TOKEN, WEATHER_TOKEN
+# токен тг-бота можно получить у botfather, для погоды - на weatherstack.com
 
 app = Flask(__name__)
 
 
-def get_env(key):
-    path = join(dirname(__file__), '.env')
-    load_dotenv(path)
-    return os.environ.get(key)
-
-
 def send(id, message):
-    token = get_env('TOKEN')
+    token = TOKEN
     url = f'https://api.telegram.org/bot{token}/sendMessage'
     data = {"chat_id": id, "text": message}
     requests.post(url, data=data)
@@ -30,9 +24,6 @@ def bot():
         text = request.json['message']['text']
         if text == '/start':
             send(id, 'Привет!\nПришли мне /currency для получения курса валют или /weather для получения погоды!')
-            f = open("users.txt", 'a', encoding='utf-8')
-            f.write(str(id) + ', ')
-            f.close()
         elif text == '/currency':
             send(id, "Подождите...")
             currency = Currency()
@@ -83,7 +74,7 @@ def notification():
             json_cur = currency.check_currency()
             reply = ''
             for city in ['Moscow', 'Sofia', 'Antalya']:
-                params = {"access_key": "4757691b2af74089ebb6d2b398420b9e", "query": city}
+                params = {"access_key": WEATHER_TOKEN, "query": city}
                 api_result = requests.get('http://api.weatherstack.com/current', params)
                 api_response = api_result.json()
                 reply += f"{city}: {api_response['current']['temperature']}°\n"
