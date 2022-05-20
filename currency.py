@@ -16,7 +16,6 @@ class Currency:
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'}
 
     current_converted_price = 0
-    difference = 5  # Разница после которой будет отправлено сообщение на почту
 
     def __init__(self):
         # Установка курса валюты при создании объекта

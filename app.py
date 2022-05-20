@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 from os.path import join, dirname
 from currency import Currency
-import schedule
+from random import choice as ch
 
 app = Flask(__name__)
 
@@ -23,7 +23,7 @@ def send(id, message):
 
 
 @app.route('/', methods=['GET', 'POST'])
-def hello_world():
+def bot():
     print(request.json)
     id = request.json['message']['chat']['id']
     if 'text' in request.json['message']:
@@ -47,6 +47,20 @@ def hello_world():
                 api_response = api_result.json()
                 reply += f"{city}: {api_response['current']['temperature']}°\n"
             send(id, reply)
+        elif '/random' in text:
+            if len(text.split()) == 1:
+                num(id)
+            else:
+                text.split()
+                try:
+                    if len(text) > 3:
+                        send(id, 'too many args')
+                    elif len(text) == 2:
+                        num(id, r=[0, int(text[1]) + 1])
+                    elif len(text) == 3:
+                        num(id, r=[int(text[1]), int(text[2])])
+                except ValueError:
+                    send(id, 'wrong literal')
         else:
             send(id, f"you wrote: {text}\nreversed: {text[::-1]}")
     else:
@@ -71,6 +85,14 @@ def notification():
 EUR: {json_cur['eur']}₽\nUSD: {json_cur['usd']}₽\nBGN: {json_cur['bgn']}₽\nTRY: {json_cur['try']}₽\nпо ЦБ РФ
 Также сегодня вот такая погода:\n''' + reply
             send(id, message)
+    print('done')
+
+
+def num(id, r=[]):
+    if len(r) == 2:
+        send(id, ch(range(r[0], r[1])))
+    else:
+        send(id, ch(range(0, 1000000)))
 
 
 if __name__ == '__main__':
